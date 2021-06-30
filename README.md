@@ -18,7 +18,9 @@ You can find the result of the encryption in the file `encrypted.txt`.
 - `encrypted.txt` file with result of encryption
 - `debug.txt` file with the debug stuff of the encryption process
 
-
+### Requirements
+- `opencv-python`
+- `numpy`
 
 [Wikipedia]:<https://en.wikipedia.org/wiki/Data_Encryption_Standard>
 [generator]:<https://github.com/D4VOS/true-random-number-generator>
