@@ -30,6 +30,9 @@ while True:
                         if text == "":
                             input(f"{newLine} File is empty.. Press any key to continue..")
                             continue
+                        elif not isASCII(text):
+                            input(f"{newLine} File should contains ASCII chars only.. Press any key to continue..")
+                            continue
                     break
             if not isASCII(text):
                 input(f"{newLine} ASCII only.. Press any key to continue..")
