@@ -5,7 +5,7 @@
 
 
 ### What is it for?
-In a nutshell, a program to encrypt files using a given key.
+In a nutshell, a program to encrypt text using a given key.
 
 
 ### How to use it?
