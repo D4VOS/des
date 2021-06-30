@@ -64,6 +64,7 @@ class DES:
               f"Input key: {self.initial_key}", file=self.debug_file)   # forward out stream to file
 
         textLen = len(self.plain_text)
+        # divide plain text to 16 blocks
         self.ECBRounds = textLen // 16 + 1 if textLen % 16 != 0 else textLen // 16
 
         self.splittedText = [self.plain_text[i:i + 16] for i in range(0, len(self.plain_text), 16)]
@@ -88,57 +89,58 @@ class DES:
 
             self.splittedText[currentRound] = self.splittedText[currentRound].ljust(16, '0')  # adding possible padding
 
-            binaryText = ASCIIToBinary(self.splittedText[currentRound])
+            binaryText = ASCIIToBinary(self.splittedText[currentRound]) # convert text ASCII -> bianary repr
             print(f"\nBinary representation of plain text: {binaryPrint(binaryText)}", file=self.debug_file)
 
-            asciiKey = stringToASCII(self.initial_key)  # key -> ASCII
-            binaryKey = ASCIIToBinary(asciiKey)  # ASCII -> binary representation
+            asciiKey = stringToASCII(self.initial_key)  # convert key string -> ASCII
+            binaryKey = ASCIIToBinary(asciiKey)  # convert key ASCII -> binary representation
             print(f"\nBinary representation of key: {binaryPrint(binaryKey)}", file=self.debug_file)
 
-            permutedText = permutation(binaryText, 64, IP)
+            permutedText = permutation(binaryText, 64, IP)  # permutation with initial permutation table
             print(f"\nAfter Initial Permutation: {permutedText}", file=self.debug_file)
 
             print("\nText", end='', file=self.debug_file)
-            leftText, rightText = self.splitting(permutedText, 64)
+            leftText, rightText = self.splitting(permutedText, 64)  # separate text to left and right one
 
             permutedKey = permutation(binaryKey, 56, PC1)  # permutation using PC1
             print(f"\nKey after PC1 permutation: {permutedText}", file=self.debug_file)
 
             print("\nKey", end='', file=self.debug_file)
-            leftKey, rightKey = self.splitting(permutedKey, 56)
+            leftKey, rightKey = self.splitting(permutedKey, 56)  # separate key to left and right one
 
+            # create subkeyses
             leftSubkeys = createSubkeys(leftKey)
             rightSubkeys = createSubkeys(rightKey)
             print(f"\nSubkeys:\n"
                   f"Left: {leftSubkeys}\n"
                   f"Right: {rightSubkeys}", file=self.debug_file)
 
-            subkeys = concatAndPermute(leftSubkeys, rightSubkeys)
+            subkeys = concatAndPermute(leftSubkeys, rightSubkeys)   # concating and permutation using PC2
             print(f"\nPermuted subkeys:\n"
                   f"{binaryPrint(subkeys, 48)}", file=self.debug_file)
 
             for i in range(16):  # Feistel network
                 print(f"{i + 1}. round...", file=self.debug_file)
-                nextLeft = rightText
+                nextLeft = rightText    # L{i+1} = R{i}
 
-                selected = bitsSelection(rightText)
+                selected = bitsSelection(rightText)  # f(R{i}, K{i+1})
                 print(f"\nResult of bits selection:\n"
                       f"{binaryPrint(selected, 48)}", file=self.debug_file)
 
-                xorResult = xor(selected, subkeys[i])
+                xorResult = xor(selected, subkeys[i])  # R{i+1} = L{i} + f(R{i}, K{i+1}) XOR
                 print(f"\nL0 XOR f(R{i}, K{i + 1}) result:\n"
                       f"{binaryPrint(xorResult, 48)}", file=self.debug_file)
 
-                splitted = splitBinary(xorResult, 6)
-                permutedBins = permuteSBox(splitted)
+                splitted = splitBinary(xorResult, 6)    # divide 48 bits to 8 slices
+                permutedBins = permuteSBox(splitted)    # permuting each using SBoxes
                 print(f"\nPermuted bits using S-boxes:\n"
                       f"{binaryPrint(permutedBins, 32)}", file=self.debug_file)
 
-                permutedBins = permutation(permutedBins, 32, Permutation)
+                permutedBins = permutation(permutedBins, 32, Permutation)   # permutation using Permutation table
                 print(f"\nPermuted bits using P-table:\n"
                       f"{binaryPrint(permutedBins, 32)}", file=self.debug_file)
 
-                xorResult = xor(permutedBins, leftText)
+                xorResult = xor(permutedBins, leftText)  # XOR with left side
                 print(f"\nPermuted bins XOR left:\n"
                       f"{binaryPrint(xorResult, 32)}\n", file=self.debug_file)
 
@@ -149,16 +151,17 @@ class DES:
                       f"Left: {binaryPrint(nextLeft, 32)}\n"
                       f"Left: {binaryPrint(rightText, 32)}\n{line}\n", file=self.debug_file)
 
+            # swapping in 16 round and permutation with IPrev table
             swapped = permutation(rightText + leftText, 64, IPreversed)
             print(f"\nBinary final result:\n"
                   f"{binaryPrint(swapped, 64)}", file=self.debug_file)
 
-            cipherASCII = binaryToASCII(swapped)
+            cipherASCII = binaryToASCII(swapped)    # convert cipher binary -> ASCII
             print(f"\nASCII final result:\n"
                   f"{cipherASCII}\n", file=self.debug_file)
             print(f"ECB Round finished", file=self.debug_file)
 
-            cipherText = ASCIIToString(cipherASCII)
+            cipherText = ASCIIToString(cipherASCII) # convert cipher ASCII -> string
             self.ciphers.append(cipherText)
 
         print(f"\n{newLine}Finished.\n{line}", file=self.debug_file)
