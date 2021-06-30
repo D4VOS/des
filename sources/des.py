@@ -1,7 +1,7 @@
 from sources.common import *
 
-INPUT_FILE = "../encrypted.txt"
-DEBUG_FILE = "../debug.txt"
+INPUT_FILE = "./encrypted.txt"
+DEBUG_FILE = "./debug.txt"
 
 
 def createSubkeys(key: str) -> list[str]:
@@ -56,12 +56,12 @@ class DES:
 
     def __init__(self, plain: str, key: str):
         """ Init DES encryptor object """
-        self.debug_file = open(DEBUG_FILE, "w+")  # change to sys.stdout to CLI output
+        self.debug_file = open(DEBUG_FILE, "w")  # change to sys.stdout to CLI output
         self.original_text = plain
         self.plain_text = stringToASCII(self.original_text)  # plain text to ascii
         self.initial_key = key
         print(f"Input text ASCII: {self.plain_text}\t"
-              f"Input key: {self.initial_key}", file=self.debug_file)
+              f"Input key: {self.initial_key}", file=self.debug_file)   # forward out stream to file
 
         textLen = len(self.plain_text)
         self.ECBRounds = textLen // 16 + 1 if textLen % 16 != 0 else textLen // 16
@@ -176,7 +176,7 @@ class DES:
 
     def saveToFile(self, cipher: str) -> None:
         """ Saving result to file """
-        with open(INPUT_FILE, "w+") as f:
+        with open(INPUT_FILE, "w") as f:
             f.write(f"Plain text: {self.original_text}\n"
                     f"Initial key: {self.initial_key}\n"
                     f"Cipher: {cipher}")
