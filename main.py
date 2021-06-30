@@ -1,10 +1,10 @@
 import os
 
-from common import isASCII
-from common import startMenu, line, newLine, cls
-from common import VIDEO_PATH, RESULT_OUTPUT
-from generator import Generator, Video
-from des import DES
+from sources.common import isASCII
+from sources.common import newLine, cls
+from sources.common import VIDEO_PATH, RESULT_OUTPUT
+from sources.generator import Generator, Video
+from sources.des import DES
 
 cls()
 

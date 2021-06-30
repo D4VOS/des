@@ -1,7 +1,8 @@
-from common import *
+from sources.common import *
 
-INPUT_FILE = "encrypted.txt"
-DEBUG_FILE = "debug.txt"
+INPUT_FILE = "../encrypted.txt"
+DEBUG_FILE = "../debug.txt"
+
 
 def createSubkeys(key: str) -> list[str]:
     """ Creating subkeyses from key """
@@ -50,13 +51,12 @@ def permuteSBox(bins: list[str]) -> str:
     return res
 
 
-
 class DES:
     """ DES Encryptor Class """
 
     def __init__(self, plain: str, key: str):
         """ Init DES encryptor object """
-        self.debug_file = open(DEBUG_FILE, "w+")     # change to sys.stdout to CLI output
+        self.debug_file = open(DEBUG_FILE, "w+")  # change to sys.stdout to CLI output
         self.original_text = plain
         self.plain_text = stringToASCII(self.original_text)  # plain text to ascii
         self.initial_key = key
@@ -84,7 +84,7 @@ class DES:
     def encrypt(self):
         """ Encryption """
         for currentRound in range(self.ECBRounds):
-            print(f"{currentRound+1}. ECB Round started", file=self.debug_file)
+            print(f"{currentRound + 1}. ECB Round started", file=self.debug_file)
 
             self.splittedText[currentRound] = self.splittedText[currentRound].ljust(16, '0')  # adding possible padding
 
@@ -118,7 +118,7 @@ class DES:
                   f"{binaryPrint(subkeys, 48)}", file=self.debug_file)
 
             for i in range(16):  # Feistel network
-                print(f"{i+1}. round...", file=self.debug_file)
+                print(f"{i + 1}. round...", file=self.debug_file)
                 nextLeft = rightText
 
                 selected = bitsSelection(rightText)
