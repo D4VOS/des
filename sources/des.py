@@ -1,4 +1,5 @@
 from sources.common import *
+import sys
 
 INPUT_FILE = "./encrypted.txt"
 DEBUG_FILE = "./debug.txt"
@@ -72,7 +73,8 @@ class DES:
         self.ciphers = []
 
     def __del__(self):
-        self.debug_file.close()
+        if not self.debug_file != sys.stdout:
+            self.debug_file.close()
 
     def init(self):
         """ Start """
@@ -172,7 +174,12 @@ class DES:
         for i, cip in enumerate(self.ciphers):
             res += cip
 
-        cipher = ' '.join(hex(ord(x))[2:].zfill(2) for x in res)
+        cipher = ' '.join(hex(ord(x))[2:].zfill(2) for x in res)    #cipher to hex
+
+        # result output
+        print(f"\nPlain text: {self.original_text}\n"
+                f"Initial key: {self.initial_key}\n"
+                f"Cipher: {cipher}", file=self.debug_file)
         self.saveToFile(cipher)
 
         input("\n>> CTRL-Z to terminate DES or any key to encrypt again..")
