@@ -23,7 +23,7 @@ while True:
                     cls()
                     inputFile = input(f"{newLine} Enter a filename: ")
                     if not os.path.exists(inputFile) or not inputFile[4:].lower() != ".txt":
-                        input(f"{newLine} Enter correct filename from root dir.. Press any key to continue..")
+                        input(f"{newLine} Enter correct filename from project dir.. Press any key to continue..")
                         continue
                     with open(inputFile, "r") as f:
                         text = f.read().replace('\n', '')
